@@ -102,6 +102,7 @@ func (d *Client) checkChanges(firstCheck bool) {
 	updatedItems := 0
 	processedItems := 0
 	for {
+        // TODO: Attach TeamDriveId if necessary.
 		query := client.Changes.
 			List(pageToken).
 			Fields(googleapi.Field(fmt.Sprintf("nextPageToken, newStartPageToken, changes(removed, fileId, file(%v))", Fields))).
@@ -125,7 +126,7 @@ func (d *Client) checkChanges(firstCheck bool) {
 					Log.Tracef("%v", err)
 				}
 				deletedItems++
-			} else {
+			} else if change.File != nil {
 				object, err := d.mapFileToObject(change.File)
 				if nil != err {
 					Log.Debugf("%v", err)
